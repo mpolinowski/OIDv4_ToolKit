@@ -89,7 +89,7 @@ def download_img(folder, dataset_dir, class_name, images_list, threads):
 def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, args):
     '''
     Make the label.txt files
-    :param folder: trai, validation or test
+    :param folder: train, validation or test
     :param dataset_dir: self explanatory
     :param class_name: self explanatory
     :param class_code: self explanatory
@@ -105,6 +105,7 @@ def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, a
             download_dir = os.path.join(dataset_dir, image_dir, class_list)
             label_dir = os.path.join(dataset_dir, folder, class_list, 'Label')
         else:
+            # print(class_list)
             download_dir = os.path.join(dataset_dir, image_dir, class_name)
             label_dir = os.path.join(dataset_dir, folder, class_name, 'Label')
 
@@ -125,13 +126,17 @@ def get_label(folder, dataset_dir, class_name, class_code, df_val, class_list, a
                     f = open(file_path, 'w')
 
                 for box in boxes:
-                    box[0] *= int(dataset_image.shape[1])
-                    box[1] *= int(dataset_image.shape[1])
-                    box[2] *= int(dataset_image.shape[0])
-                    box[3] *= int(dataset_image.shape[0])
-
-                    # each row in a file is name of the class_name, XMin, YMix, XMax, YMax (left top right bottom)
-                    print(class_name, box[0], box[2], box[1], box[3], file=f)
+                    if not args.noConversion:
+                        # box labels are normalized - multiply with image dims to get absolute values
+                        box[0] *= int(dataset_image.shape[1])
+                        box[1] *= int(dataset_image.shape[1])
+                        box[2] *= int(dataset_image.shape[0])
+                        box[3] *= int(dataset_image.shape[0])
+                        # each row in a file is name of the class_name, XMin, YMix, XMax, YMax (left top right bottom)
+                        print(class_name, box[0], box[2], box[1], box[3], file=f)
+                    else:
+                        # each row in a file is name of the class_name, XMin, YMix, XMax, YMax (left top right bottom)
+                        print(class_list.index(class_name), box[0], box[2], box[1], box[3], file=f)
 
             except Exception as e:
                 pass

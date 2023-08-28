@@ -53,6 +53,9 @@ def parser_arguments():
     parser.add_argument('--noLabels', required=False, action='store_true',
                        help='No labels creations')
 
+    parser.add_argument('--noConversion', required=False, action='store_true',
+                       help='No label conversion')
+
     parser.add_argument('--limit', required=False, type=int, default=None,
                         metavar="integer number",
                         help='Optional limit on number of images to download')
